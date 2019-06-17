@@ -149,10 +149,10 @@ def network_check(net, verbose=False):
 
 if __name__ == '__main__':
     # Change parameters to test different assignments and topologies
-    for _ in range(1000):
-        net = Network('bi', h=3, w=3)
-        net.assign_link_costs('rigid')
-        net.find_all_paths(tau_max=4, assignment='shortest_path')
+    for _ in range(100):
+        net = Network('uni', h=3, w=3)
+        net.assign_link_costs('real')
+        net.find_all_paths(tau_max='mpl', assignment='shortest_path')
         net.generate_od_pairs()
         net.compute_path_assignment_matrix()
         net.generate_random_proportions(like_paper=True)
