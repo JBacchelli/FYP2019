@@ -155,7 +155,7 @@ class Network():
         self.compute_spl_matrix()
         self.tau_max = tau_max
         if self.tau_max == 'mpl':
-            self.tau_max = int(np.ceil((np.max(self.F))))
+            self.tau_max = int(np.ceil((np.max(self.F[self.F < np.inf]))))
         if min(self.c) >= self.tau_max:
             print('No paths given current link costs, reassigning costs')
             self.assign_link_costs(costs=self.costs)
