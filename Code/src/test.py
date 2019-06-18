@@ -147,12 +147,11 @@ def network_check(net, verbose=False):
             if verbose:
                 print('MS C7 flow constraint satisifed')
 
-if __name__ == '__main__':
-    # Change parameters to test different assignments and topologies
-    for _ in range(100):
-        net = Network('uni', h=3, w=3)
-        net.assign_link_costs('real')
-        net.find_all_paths(tau_max='mpl', assignment='shortest_path')
+def make_test(uni_bi, h, w, tau_max, costs, assment, num_tests=1000):
+    for _ in range(num_tests):
+        net = Network(uni_bi, h=h, w=w)
+        net.assign_link_costs(costs)
+        net.find_all_paths(tau_max=tau_max, assignment=assment)
         net.generate_od_pairs()
         net.compute_path_assignment_matrix()
         net.generate_random_proportions(like_paper=True)
@@ -160,4 +159,26 @@ if __name__ == '__main__':
         # net.P_ms = [np.ones(net.P.shape) for _ in range(net.tau_max)]
         network_check(net)
     else:
-        print('All tests passed successfully')
+        print(
+            '{uni_bi}directional, {h} by {w}, tau_max:{tau_max}, {costs} link costs, {assment} assignment:\n\tAll tests passed successfully\n'.format(
+                uni_bi=uni_bi,
+                h=h,
+                w=w,
+                tau_max=tau_max,
+                costs=costs,
+                assment=assment
+            ))
+
+if __name__ == '__main__':
+    # Change parameters to test different assignments and topologies
+    N_TESTS = 1000
+    make_test('uni', 3, 3, 4, 'rigid', 'random', N_TESTS)
+    make_test('uni', 3, 3, 4, 'rigid', 'shortest_path', N_TESTS)
+    make_test('uni', 3, 3, 4, 'real', 'shortest_path', N_TESTS)
+    make_test('uni', 3, 3, 'mpl', 'real', 'shortest_path', N_TESTS)
+    make_test('bi', 3, 3, 4, 'rigid', 'random', N_TESTS)
+    make_test('bi', 3, 3, 4, 'rigid', 'shortest_path', N_TESTS)
+    make_test('bi', 3, 3, 4, 'real', 'shortest_path', N_TESTS)
+    make_test('bi', 3, 3, 'mpl', 'real', 'shortest_path', N_TESTS)
+    make_test('bi', 3, 3, 2, 'real', 'shortest_path', N_TESTS)
+    make_test('bi', 8, 8, 4, 'real', 'shortest_path', 50)
